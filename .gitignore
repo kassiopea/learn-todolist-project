@@ -11,3 +11,6 @@ venv
 #node-modules
 node_modules/
 
+
+#cache
+.pytest_cache
