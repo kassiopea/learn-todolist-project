@@ -34,19 +34,28 @@ def register():
 
 
 def login():
-    raw_username: str = request.form.get('username', None)
-    raw_email: str = request.form.get('email', None)
-    raw_password: str = request.form.get('password', None)
+    username: str = request.form.get('username', None)
+    email: str = request.form.get('email', None)
+    password: str = request.form.get('password', None)
 
-    if raw_password and raw_username:
-        login_username = str(raw_username.strip())
-        password = str(raw_password.strip())
-        user = authenticate(login_username, password)
+    if password is not None:
+        password = str(password.strip())
+    if username is not None:
+        username = str(username.strip())
+    if email is not None:
+        email = str(email.strip())
+
+    if password is not None \
+            and password != "" \
+            and username is not None \
+            and username != "":
+        user = authenticate(login=username, password=password)
         return user
-    elif raw_password and raw_email:
-        login_email = str(raw_email.strip())
-        password = str(raw_password.strip())
-        user = authenticate(login_email, password)
+    elif password is not None \
+            and password != "" \
+            and email is not None \
+            and email != "":
+        user = authenticate(email, password)
         return user
     else:
         return make_response(error={"login": ErrorMessages.CREDENTIALS_REQUIREMENT}, status_code=400)
