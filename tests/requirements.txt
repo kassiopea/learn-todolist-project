@@ -1,6 +1,0 @@
-allure-pytest==2.9.43
-allure-python-commons==2.9.43
-pytest==6.2.4
-pytest-schema==0.1.0
-requests==2.26.0
-schema==0.7.4
