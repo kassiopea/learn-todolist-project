@@ -134,6 +134,8 @@ def authenticate(login, password):
             existing_user=existing_email
         )
         return response
+    else:
+        return make_response(error={"login": ErrorMessages.LOGIN_DOES_NOT_EXIST}, status_code=400)
 
 
 def change_password(user_id, old_password, new_password):

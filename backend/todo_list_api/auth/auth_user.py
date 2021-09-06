@@ -55,7 +55,7 @@ def login():
             and password != "" \
             and email is not None \
             and email != "":
-        user = authenticate(email, password)
+        user = authenticate(login=email, password=password)
         return user
     else:
         return make_response(error={"login": ErrorMessages.CREDENTIALS_REQUIREMENT}, status_code=400)
