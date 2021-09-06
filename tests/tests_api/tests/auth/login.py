@@ -206,8 +206,7 @@ class TestLoginWithEmptyRequiredFields:
     def test_check_login_with_empty_email_and_pwd(
             self,
             base_url,
-            get_base_header,
-            get_registered_user
+            get_base_header
     ):
         auth = ApiAuth(base_url=base_url)
         data = {
@@ -228,8 +227,7 @@ class TestLoginWithEmptyRequiredFields:
     def test_check_login_with_empty_username_and_pwd(
             self,
             base_url,
-            get_base_header,
-            get_registered_user
+            get_base_header
     ):
         auth = ApiAuth(base_url=base_url)
         data = {
@@ -250,8 +248,7 @@ class TestLoginWithEmptyRequiredFields:
     def test_check_login_with_only_spaces_username_and_pwd(
             self,
             base_url,
-            get_base_header,
-            get_registered_user
+            get_base_header
     ):
         auth = ApiAuth(base_url=base_url)
         data = {
@@ -290,3 +287,101 @@ class TestLoginWithEmptyRequiredFields:
         assert response_body["data"] is None
         message = response_body["errors"]["login"]
         assert message == UserAuthErrors.CREDENTIALS_REQUIREMENT
+
+
+class TestLoginWithInvalidFields:
+    def test_check_invalid_username(
+            self,
+            base_url,
+            get_base_header,
+            get_registered_user
+    ):
+        auth = ApiAuth(base_url=base_url)
+        data = {
+            "username": get_registered_user["username"] + "I",
+            "password": get_registered_user["password"]
+        }
+
+        response = auth.login(
+            path=AuthUrls.LOGIN,
+            data=data,
+            headers=get_base_header
+        )
+
+        assert response.status_code == 400
+        response_body = response.json()
+        assert response_body["data"] is None
+        message = response_body["errors"]["login"]
+        assert message == UserAuthErrors.LOGIN_DOES_NOT_EXIST
+
+    def test_check_invalid_email(
+            self,
+            base_url,
+            get_base_header,
+            get_registered_user
+    ):
+        auth = ApiAuth(base_url=base_url)
+        data = {
+            "email": "test" + get_registered_user["email"],
+            "password": get_registered_user["password"]
+        }
+
+        response = auth.login(
+            path=AuthUrls.LOGIN,
+            data=data,
+            headers=get_base_header
+        )
+
+        assert response.status_code == 400
+        response_body = response.json()
+        assert response_body["data"] is None
+        message = response_body["errors"]["login"]
+        assert message == UserAuthErrors.LOGIN_DOES_NOT_EXIST
+
+    def test_check_invalid_password_with_email(
+            self,
+            base_url,
+            get_base_header,
+            get_registered_user
+    ):
+        auth = ApiAuth(base_url=base_url)
+        data = {
+            "email": get_registered_user["email"],
+            "password": "None" + get_registered_user["password"]
+        }
+
+        response = auth.login(
+            path=AuthUrls.LOGIN,
+            data=data,
+            headers=get_base_header
+        )
+
+        assert response.status_code == 400
+        response_body = response.json()
+        assert response_body["data"] is None
+        message = response_body["errors"]["login"]
+        assert message == UserAuthErrors.LOGIN_DOES_NOT_EXIST
+
+    def test_check_invalid_password_with_username(
+            self,
+            base_url,
+            get_base_header,
+            get_registered_user
+    ):
+        auth = ApiAuth(base_url=base_url)
+        data = {
+            "username": get_registered_user["username"],
+            "password": "None" + get_registered_user["password"]
+        }
+
+        response = auth.login(
+            path=AuthUrls.LOGIN,
+            data=data,
+            headers=get_base_header
+        )
+
+        assert response.status_code == 400
+        response_body = response.json()
+        assert response_body["data"] is None
+        message = response_body["errors"]["login"]
+        assert message == UserAuthErrors.LOGIN_DOES_NOT_EXIST
