@@ -81,11 +81,3 @@ class ApiAuth(ApiBase):
             headers=headers,
             cookies=cookies
         )
-
-    # def get(self, path='', params=None, headers=None):
-    #     url = f"{self.base_url}{path}"
-    #     return requests.get(url=url, params=params, headers=headers)
-    #
-    # def delete(self, path='', headers=None):
-    #     url = f"{self.base_url}{path}"
-    #     return requests.delete(url=url, headers=headers)

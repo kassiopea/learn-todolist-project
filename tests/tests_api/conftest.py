@@ -3,7 +3,6 @@ import json
 
 import allure
 import pytest
-import requests
 
 from tests.tests_api.api_helpers.auth import ApiAuth
 from tests.tests_api.api_helpers.base import ApiBase
@@ -100,65 +99,6 @@ def get_xscrf_token(get_auth_token, get_base_header):
     headers["X-CSRF-TOKEN-ACCESS"] = xscrf_token
     return headers
 
-
-# @allure.title('Авторизация пользователя')
-# @pytest.fixture
-# def auth_token(todo_list_with_base_url, request):
-#     auth = ApiAuth()
-#     data_for_auth = User(username=generate_data("username", 8),
-#                          email=generate_data("email", 10),
-#                          password=generate_data("password", 6))
-#     data = vars(data_for_auth)
-#
-#     # auth_url = f'{AuthUrls.AUTH}{AuthUrls.REGISTER}'
-#     auth_url = "register"
-#     headers = BaseHeaders.HEADERS
-#     # response = todo_list_with_base_url.post(path=auth_url,
-#     #                                    headers=headers,
-#     #                                    data=data)
-#     response = auth.registration(
-#         path=auth_url,
-#         headers=headers,
-#         data=data
-#     )
-#
-#     with allure.step(f'Создали нового пользователя с именем: '
-#                      f'{data_for_auth.username}, '
-#                      f'почтой: {data_for_auth.email},'
-#                      f'паролем: {data_for_auth.password}'):
-#         assert response.status_code == 200
-#
-#     login_url = "login"
-#     data_for_login = {"username": data_for_auth.username, "password": data_for_auth.password}
-#     # s.get('https://www.google.com')
-#     response_login = auth.login(
-#         path=login_url,
-#         headers=headers,
-#         data=data_for_login
-#     )
-#
-#     assert response_login.status_code == 200
-#     cookies = response_login.cookies
-#     xcsrf = cookies['csrf_access_token']
-#     header_token = {"X-CSRF-TOKEN-ACCESS": xcsrf}
-#     # auth_token = 'Bearer ' + response_body['access_token']
-#
-#     # def delete_user():
-#     #     url = f'{AuthUrls.AUTH}{AuthUrls.DELETE}'
-#     #     headers_for_delete_user = {'Authorization': auth_token}
-#     #     response_for_delete_user = todo_list_crud_api.delete(
-#     #         path=url, headers=headers_for_delete_user)
-#     #     with allure.step(f'Запрос отправлен. '
-#     #                      f'Проверяем, что пользователь '
-#     #                      f'{data_for_auth.username} удалён'):
-#     #         assert response_for_delete_user.status_code == 200, \
-#     #             f'Пользователь не был удалён. ' \
-#     #             f'Status code is {response.status_code}'
-#     #
-#     # request.addfinalizer(delete_user)
-#     return cookies, xcsrf
-#
-#
 
 def load_from_json(file):
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
