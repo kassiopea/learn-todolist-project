@@ -41,7 +41,6 @@ class RegisterUser(User):
     def _valid_username(self, raw_username):
         field_name = "username"
         username = raw_username if raw_username is None else raw_username.strip()
-
         if username is None or username == "":
             self.notification.add_notification(field_name, ErrorMessages.FIELD_REQUIREMENT)
         elif type(username) != str:
