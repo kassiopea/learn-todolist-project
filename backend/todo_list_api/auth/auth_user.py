@@ -67,17 +67,17 @@ def logout():
 
 
 def change_pwd(user_id, data):
-    old_password = data.get('old_password')
-    new_password = data.get('new_password')
+    old_password = data.get('old_password', None)
+    new_password = data.get('new_password', None)
 
     passwords = ChangePasswords(old_password, new_password)
     errors = validate(passwords)
     if errors["errors"]:
         response = make_response(error=errors["errors"], status_code=400)
         return response
-
-    response = change_password(user_id, passwords.old_password, passwords.new_password)
-    return response
+    else:
+        response = change_password(user_id, passwords.old_password, passwords.new_password)
+        return response
 
 
 def delete_user_account(user_id):
