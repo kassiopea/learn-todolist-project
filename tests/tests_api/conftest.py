@@ -7,7 +7,7 @@ import requests
 
 from tests.tests_api.api_helpers.auth import ApiAuth
 from tests.tests_api.api_helpers.base import ApiBase
-from tests.tests_api.constants import BaseUrls, AuthUrls, BaseHeaders
+from tests.tests_api.constants import BaseUrls, AuthUrls, Headers
 from tests.tests_api.data.generate_auth_data import generate_data
 from tests.tests_api.models.user import User, RegisteredUser
 
@@ -22,31 +22,6 @@ def pytest_addoption(parser):
 def base_url(request):
     return request.config.getoption("--url")
 
-
-# этот объект в теории можно вынести в отдельный helper или fixture
-# class ApiTodo:
-#     def __init__(self, base_url):
-#         self.base_url = base_url
-#
-#     def post(self, path="", params=None, data=None, headers=None):
-#         url = f"{self.base_url}{path}"
-#         return requests.post(url=url, params=params,
-#                              data=data, headers=headers)
-#
-#     def get(self, path='', params=None, headers=None):
-#         url = f"{self.base_url}{path}"
-#         return requests.get(url=url, params=params, headers=headers)
-#
-#     def delete(self, path='', headers=None):
-#         url = f"{self.base_url}{path}"
-#         return requests.delete(url=url, headers=headers)
-
-
-# @allure.title('Передали базовый URL')
-# @pytest.fixture
-# def todo_list_crud_api():
-#     base_url = BaseUrls.BASE_URL
-#     return ApiTodo(base_url=base_url)
 
 @allure.title('Передали базовый URL')
 @pytest.fixture
@@ -67,7 +42,7 @@ def get_user():
 
 @pytest.fixture
 def get_base_header():
-    header = BaseHeaders.HEADERS
+    header = Headers.BASE_HEADERS
     return header
 
 
@@ -102,9 +77,9 @@ def get_auth_user(base_url, get_base_header, get_registered_user):
     )
     cookies = response_auth.cookies
     get_user.cookie = cookies
-    xscrf_token = get_auth_token["csrf_access_token"]
-    headers = get_base_header
-    headers["X-CSRF-TOKEN-ACCESS"] = xscrf_token
+    headers = Headers.AUTH_HEADERS
+    xscrf_token = cookies["csrf_access_token"]
+    headers['X-CSRF-TOKEN-ACCESS'] = xscrf_token
     get_user.headers = headers
     return get_user
 

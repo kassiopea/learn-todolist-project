@@ -11,9 +11,13 @@ class AuthUrls:
     CHANGE_PASSWORD = 'change-password'
 
 
-class BaseHeaders:
-    HEADERS = {
+class Headers:
+    BASE_HEADERS = {
         'Content-Type': "application/x-www-form-urlencoded",
+    }
+    AUTH_HEADERS = {
+        'Content-Type': "application/x-www-form-urlencoded",
+        'X-CSRF-TOKEN-ACCESS': None
     }
 
 
@@ -25,7 +29,7 @@ class TodoUrls:
 
 class UsersUrls:
     USERS_API = "/api/v1/users/"
-    ABOUT_CURRENT_USER = "profile"
+    PROFILE = "profile"
 
 
 class Colors:
