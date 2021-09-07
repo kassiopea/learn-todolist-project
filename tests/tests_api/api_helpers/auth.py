@@ -45,7 +45,7 @@ class ApiAuth(ApiBase):
             params=None,
             data=None,
             headers=None,
-            cookie=None
+            cookies=None
     ):
         url = f"{self.base_url}{self.auth_route}{path}"
         return requests.put(
@@ -53,7 +53,7 @@ class ApiAuth(ApiBase):
             params=params,
             data=data,
             headers=headers,
-            cookies=cookie
+            cookies=cookies
         )
 
     def logout(
