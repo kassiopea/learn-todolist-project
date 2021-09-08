@@ -45,7 +45,7 @@ class ApiAuth(ApiBase):
             params=None,
             data=None,
             headers=None,
-            cookie=None
+            cookies=None
     ):
         url = f"{self.base_url}{self.auth_route}{path}"
         return requests.put(
@@ -53,7 +53,7 @@ class ApiAuth(ApiBase):
             params=params,
             data=data,
             headers=headers,
-            cookies=cookie
+            cookies=cookies
         )
 
     def logout(
@@ -81,11 +81,3 @@ class ApiAuth(ApiBase):
             headers=headers,
             cookies=cookies
         )
-
-    # def get(self, path='', params=None, headers=None):
-    #     url = f"{self.base_url}{path}"
-    #     return requests.get(url=url, params=params, headers=headers)
-    #
-    # def delete(self, path='', headers=None):
-    #     url = f"{self.base_url}{path}"
-    #     return requests.delete(url=url, headers=headers)

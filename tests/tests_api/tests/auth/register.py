@@ -290,11 +290,11 @@ class TestRegistrationInvalidWithBoundaryValues:
             self,
             get_base_header,
             base_url,
-            json_invalid_boundary_name
+            json_auth_invalid_boundary_name
     ):
         auth = ApiAuth(base_url=base_url)
         get_user = User(
-            username=json_invalid_boundary_name["username"],
+            username=json_auth_invalid_boundary_name["username"],
             email=generate_data("email", 8),
             password=generate_data("password", 7)
         )
@@ -335,13 +335,13 @@ class TestRegistrationInvalidWithBoundaryValues:
             self,
             get_base_header,
             base_url,
-            json_invalid_boundary_password
+            json_auth_invalid_boundary_password
     ):
         auth = ApiAuth(base_url=base_url)
         get_user = User(
             username=generate_data("username", 11),
             email=generate_data("email", 7),
-            password=json_invalid_boundary_password["password"]
+            password=json_auth_invalid_boundary_password["password"]
         )
         data = vars(get_user)
         response = auth.registration(
@@ -358,13 +358,13 @@ class TestRegistrationInvalidWithBoundaryValues:
             self,
             get_base_header,
             base_url,
-            json_invalid_boundary_password
+            json_auth_invalid_boundary_password
     ):
         auth = ApiAuth(base_url=base_url)
         get_user = User(
             username=generate_data("username", 5),
             email=generate_data("email", 4),
-            password=json_invalid_boundary_password["password"]
+            password=json_auth_invalid_boundary_password["password"]
         )
         data = vars(get_user)
         response = auth.registration(
