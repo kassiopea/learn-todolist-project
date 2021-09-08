@@ -18,3 +18,4 @@ class UserAuthErrors:
     INVALID_TOKEN_IN_COOKIE = "Invalid crypto padding"
     INVALID_CSRF_TOKEN = "CSRF double submit tokens do not match"
     REVOKED_TOKEN = "Token has been revoked"
+    INCORRECT_PASSWORD = "Такого пароля не существует."
