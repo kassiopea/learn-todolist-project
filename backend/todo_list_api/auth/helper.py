@@ -141,17 +141,17 @@ def authenticate(login, password):
 def change_password(user_id, old_password, new_password):
     users_collection = mongo.db.users
     hashed_password = generate_password_hash(new_password)
-    hashed_current_password = generate_password_hash(old_password)
 
     user = users_collection.find_one(
-        {'_id': ObjectId(user_id)},
-        {"password": hashed_current_password}
+        {'_id': ObjectId(user_id)}
     )
 
-    if user:
+    if user and check_password_hash(user.get("password"), old_password):
         data = users_collection.update(
             {'_id': ObjectId(user_id)},
-            {'$set': {"password": hashed_password}})
+            {'$set': {
+                "password": hashed_password
+            }})
         status_code = 200
         response = make_response(data=data, status_code=status_code)
         return response
