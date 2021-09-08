@@ -291,12 +291,12 @@ class TestSuccessfulPasswordChange:
             self,
             base_url,
             get_auth_user,
-            json_auth_valid_new_pwd
+            json_auth_valid_min_length_pwd
     ):
         auth = ApiAuth(base_url=base_url)
         data = {
             "old_password": get_auth_user.password,
-            "new_password": json_auth_valid_new_pwd["new_password"]
+            "new_password": json_auth_valid_min_length_pwd["new_password"]
         }
 
         response = auth.change_password(
@@ -311,8 +311,110 @@ class TestSuccessfulPasswordChange:
         assert response_body["data"]["nModified"] == 1
         assert response_body["data"]["updatedExisting"] is True
 
-    def test_check_change_pwd_with_max_length_new_pwd(self):
-        pass
+    def test_check_change_pwd_with_max_length_new_pwd(
+            self,
+            base_url,
+            get_auth_user
+    ):
+        auth = ApiAuth(base_url=base_url)
+        data = {
+            "old_password": get_auth_user.password,
+            "new_password": "123-_:;!?()$#'&TestL"
+        }
+        response = auth.change_password(
+            path=AuthUrls.CHANGE_PASSWORD,
+            data=data,
+            headers=get_auth_user.headers,
+            cookies=get_auth_user.cookie
+        )
 
-    def test_check_change_pwd_with_middle_length_new_pwd(self):
-        pass
+        assert response.status_code == 200
+        response_body = response.json()
+        assert response_body["data"]["nModified"] == 1
+        assert response_body["data"]["updatedExisting"] is True
+
+    def test_check_change_pwd_with_middle_length_new_pwd(
+            self,
+            base_url,
+            get_auth_user
+    ):
+        auth = ApiAuth(base_url=base_url)
+        data = {
+            "old_password": get_auth_user.password,
+            "new_password": "123456&New"
+        }
+        response = auth.change_password(
+            path=AuthUrls.CHANGE_PASSWORD,
+            data=data,
+            headers=get_auth_user.headers,
+            cookies=get_auth_user.cookie
+        )
+        assert response.status_code == 200
+        response_body = response.json()
+        assert response_body["data"]["nModified"] == 1
+        assert response_body["data"]["updatedExisting"] is True
+
+    def test_check_invalid_login_with_old_pwd(
+            self,
+            base_url,
+            get_auth_user
+    ):
+        auth = ApiAuth(base_url=base_url)
+        data = {
+            "old_password": get_auth_user.password,
+            "new_password": "123456New"
+        }
+        response = auth.change_password(
+            path=AuthUrls.CHANGE_PASSWORD,
+            data=data,
+            headers=get_auth_user.headers,
+            cookies=get_auth_user.cookie
+        )
+        assert response.status_code == 200
+        data_for_login = {
+            "username": get_auth_user.username,
+            "password": get_auth_user.password
+        }
+        response_login = auth.login(
+            path=AuthUrls.LOGIN,
+            data=data_for_login
+        )
+
+        assert response_login.status_code == 400
+        response_login_body = response_login.json()
+        current_msg = response_login_body["errors"]["login"]
+        assert current_msg == UserAuthErrors.LOGIN_DOES_NOT_EXIST
+
+    def test_check_valid_login_with_new_pwd(
+            self,
+            base_url,
+            get_auth_user
+    ):
+        auth = ApiAuth(base_url=base_url)
+        new_pwd = "NewTest_pwd&12"
+        data = {
+            "old_password": get_auth_user.password,
+            "new_password": new_pwd
+        }
+        response = auth.change_password(
+            path=AuthUrls.CHANGE_PASSWORD,
+            data=data,
+            headers=get_auth_user.headers,
+            cookies=get_auth_user.cookie
+        )
+        assert response.status_code == 200
+
+        data_for_login = {
+            "username": get_auth_user.username,
+            "password": new_pwd
+        }
+
+        response_for_login = auth.login(
+            path=AuthUrls.LOGIN,
+            data=data_for_login
+        )
+
+        assert response_for_login.status_code == 200
+        resp_login_body = response_for_login.json()
+        assert resp_login_body["errors"] is None
+        assert resp_login_body["data"]["username"] == get_auth_user.username
