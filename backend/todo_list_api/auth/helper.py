@@ -156,7 +156,7 @@ def change_password(user_id, old_password, new_password):
         response = make_response(data=data, status_code=status_code)
         return response
     else:
-        error = ErrorMessages.INCORRECT_PASSWORD
+        error = {"password": ErrorMessages.INCORRECT_PASSWORD}
         status_code = 400
         response = make_response(error=error, status_code=status_code)
         return response
