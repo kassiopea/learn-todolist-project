@@ -1,7 +1,7 @@
 from tests.tests_api.api_helpers.auth import ApiAuth
 from tests.tests_api.constants import AuthUrls
 from tests.tests_api.data.messages import UserAuthErrors
-from tests.tests_api.helps import get_list_keys_from_response
+from tests.tests_api.helpers import get_list_keys_from_response
 
 
 class TestUnsuccessfulPasswordChange:
