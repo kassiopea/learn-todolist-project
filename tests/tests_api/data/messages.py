@@ -10,7 +10,7 @@ class UserAuthErrors:
     USERNAME_INVALID_SYMBOLS = "Имя пользователя должно содержать цифры, " \
                                "латинские буквы, символы:  '-_.'"
     EMAIL_INVALID = "Введен невалидный формат емейла"
-    PASSWORD_INVALID = "Пароль должен содержать цифры, латинские буквы, символы: '-_:;!?()$#'"
+    PASSWORD_INVALID = "Пароль должен содержать цифры, латинские буквы, символы: '-_:;!?()$#'&"
     CREDENTIALS_REQUIREMENT = "Поля логин и пароль обязательны для заполнения"
     LOGIN_DOES_NOT_EXIST = "Такого пользователя не существует"
     MISSING_COOKIE_ACCESS_TOKEN = 'Missing cookie "access_token"'
@@ -19,3 +19,4 @@ class UserAuthErrors:
     INVALID_CSRF_TOKEN = "CSRF double submit tokens do not match"
     REVOKED_TOKEN = "Token has been revoked"
     INCORRECT_PASSWORD = "Такого пароля не существует."
+    PASSWORD_DID_NOT_CHANGE = "Пароль не был изменен"

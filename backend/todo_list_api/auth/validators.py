@@ -13,11 +13,9 @@ class User:
         self.notification = Notifications("errors")
 
     def _valid_password(self, raw_password, field_name, notification):
-        password = raw_password.strip()
-        if raw_password is None or password == "":
+        password = raw_password if raw_password is None else raw_password.strip()
+        if password is None or password == "":
             notification.add_notification(field_name, ErrorMessages.FIELD_REQUIREMENT)
-        # else:
-        #     password = raw_password.strip()
         elif type(password) != str:
             notification.add_notification(field_name, ErrorMessages.STRING_FIELD)
         elif len(password) < 6 or len(password) > 20:
@@ -43,10 +41,6 @@ class RegisterUser(User):
     def _valid_username(self, raw_username):
         field_name = "username"
         username = raw_username if raw_username is None else raw_username.strip()
-        # if raw_username is None:
-        #     username = raw_username
-        # else:
-        #     username = raw_username.strip()
         if username is None or username == "":
             self.notification.add_notification(field_name, ErrorMessages.FIELD_REQUIREMENT)
         elif type(username) != str:
@@ -59,7 +53,7 @@ class RegisterUser(User):
 
     def _valid_email(self, raw_email):
         field_name = "email"
-        email = raw_email
+        email = raw_email if raw_email is None else raw_email.strip()
         if email is None or email == "":
             self.notification.add_notification(field_name, ErrorMessages.FIELD_REQUIREMENT)
         else:
@@ -87,9 +81,14 @@ class ChangePasswords(User):
 
     def _equals_passwords(self, raw_new_password):
         self.new_password = self._valid_password(raw_new_password, "new_password", self.notification)
-        if self.old_password.strip() == self.new_password.strip():
+        old_password = self.old_password if self.old_password is None else self.old_password.strip()
+        new_password = self.new_password if self.new_password is None else self.new_password.strip()
+
+        if (old_password and new_password) is not None \
+                and (old_password and new_password) != "" \
+                and old_password == new_password:
             self.notification.add_notification("password", ErrorMessages.PASSWORD_DID_NOT_CHANGE)
-        return self.new_password.strip()
+        return new_password
 
 
 def validate(user):

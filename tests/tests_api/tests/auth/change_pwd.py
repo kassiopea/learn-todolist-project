@@ -31,12 +31,12 @@ class TestUnsuccessfulPasswordChange:
             self,
             base_url,
             get_auth_user,
-            json_empty_change_pwd
+            json_auth_empty_change_pwd
     ):
         auth = ApiAuth(base_url=base_url)
         response = auth.change_password(
             path=AuthUrls.CHANGE_PASSWORD,
-            data=json_empty_change_pwd,
+            data=json_auth_empty_change_pwd,
             headers=get_auth_user.headers,
             cookies=get_auth_user.cookie
         )
@@ -155,21 +155,91 @@ class TestUnsuccessfulPasswordChange:
 
         assert response.status_code == 400
         response_body = response.json()
-        print(response_body)
-        current_msg = response_body["errors"][0]["old_password"]
+        current_msg = response_body["errors"]["old_password"]
         assert current_msg == UserAuthErrors.INCORRECT_PASSWORD
 
-    def test_check_change_pwd_with_invalid_new_pwd(self):
-        pass
+    def test_check_change_pwd_with_invalid_new_pwd(
+            self,
+            base_url,
+            get_auth_user,
+            json_auth_invalid_new_pwd
+    ):
+        auth = ApiAuth(base_url=base_url)
+        data = {
+            "old_password": get_auth_user.password,
+            "new_password": json_auth_invalid_new_pwd["new_password"]
+        }
+        response = auth.change_password(
+            path=AuthUrls.CHANGE_PASSWORD,
+            data=data,
+            headers=get_auth_user.headers,
+            cookies=get_auth_user.cookie
+        )
 
-    def test_check_change_pwd_with_equal_new_and_old_pws(self):
-        pass
+        assert response.status_code == 400
+        response_body = response.json()
+        current_message = response_body["errors"][0]["new_password"]
+        assert current_message == UserAuthErrors.PASSWORD_INVALID
 
-    def test_check_change_pwd_without_cookie(self):
-        pass
+    def test_check_change_pwd_with_equal_new_and_old_pws(
+            self,
+            base_url,
+            get_auth_user
+    ):
+        auth = ApiAuth(base_url=base_url)
+        data = {
+            "old_password": get_auth_user.password,
+            "new_password": get_auth_user.password
+        }
+        response = auth.change_password(
+            path=AuthUrls.CHANGE_PASSWORD,
+            data=data,
+            headers=get_auth_user.headers,
+            cookies=get_auth_user.cookie
+        )
 
-    def test_check_change_pwd_without_xcsrf_token_in_headers(self):
-        pass
+        assert response.status_code == 400
+        response_body = response.json()
+        current_msg = response_body["errors"][0]["password"]
+        assert current_msg == UserAuthErrors.PASSWORD_DID_NOT_CHANGE
+
+    def test_check_change_pwd_without_cookie(
+            self,
+            base_url,
+            get_auth_user
+    ):
+        auth = ApiAuth(base_url=base_url)
+        data = {
+            "old_password": get_auth_user.password,
+            "new_password": f"{get_auth_user.password}TEST"
+        }
+
+        response = auth.change_password(
+            path=AuthUrls.CHANGE_PASSWORD,
+            data=data,
+            headers=get_auth_user.headers
+        )
+
+        assert response.status_code == 401
+
+    def test_check_change_pwd_without_xcsrf_token_in_headers(
+            self,
+            base_url,
+            get_auth_user
+    ):
+        auth = ApiAuth(base_url=base_url)
+        data = {
+            "old_password": get_auth_user.password,
+            "new_password": f"{get_auth_user.password}TEST"
+        }
+
+        response = auth.change_password(
+            path=AuthUrls.CHANGE_PASSWORD,
+            data=data,
+            cookies=get_auth_user.cookie
+        )
+
+        assert response.status_code == 401
 
 
 class TestSuccessfulPasswordChange:
