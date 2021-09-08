@@ -9,7 +9,7 @@ class User:
     def __init__(self):
         self.pattern_username = r'^[0-9a-zA-Z]+[0-9a-zA-Z-_.]+$'
         self.pattern_email = r'^[a-zA-Z0-9]+[\._]?[a-zA-Z0-9]+[@]\w+[.]\w{2,3}$'
-        self.pattern_password = r'[0-9a-zA-Z-_:;!?()$&#]+$'
+        self.pattern_password = r'[0-9a-zA-Z-_:;!?()$&\'#]+$'
         self.notification = Notifications("errors")
 
     def _valid_password(self, raw_password, field_name, notification):
