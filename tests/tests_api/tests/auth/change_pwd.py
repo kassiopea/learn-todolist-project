@@ -181,6 +181,50 @@ class TestUnsuccessfulPasswordChange:
         current_message = response_body["errors"][0]["new_password"]
         assert current_message == UserAuthErrors.PASSWORD_INVALID
 
+    def test_check_change_pwd_with_less_than_min_length_new_pwd(
+            self,
+            base_url,
+            get_auth_user
+    ):
+        auth = ApiAuth(base_url=base_url)
+        data = {
+            "old_password": get_auth_user.password,
+            "new_password": "12345"
+        }
+        response = auth.change_password(
+            path=AuthUrls.CHANGE_PASSWORD,
+            data=data,
+            headers=get_auth_user.headers,
+            cookies=get_auth_user.cookie
+        )
+
+        assert response.status_code == 400
+        response_body = response.json()
+        current_message = response_body["errors"][0]["new_password"]
+        assert current_message == UserAuthErrors.PASSWORD_LENGTH
+
+    def test_check_change_pwd_with_more_than_max_length_new_pwd(
+            self,
+            base_url,
+            get_auth_user
+    ):
+        auth = ApiAuth(base_url=base_url)
+        data = {
+            "old_password": get_auth_user.password,
+            "new_password": "123456789ABCDSLDsldjd"
+        }
+        response = auth.change_password(
+            path=AuthUrls.CHANGE_PASSWORD,
+            data=data,
+            headers=get_auth_user.headers,
+            cookies=get_auth_user.cookie
+        )
+
+        assert response.status_code == 400
+        response_body = response.json()
+        current_message = response_body["errors"][0]["new_password"]
+        assert current_message == UserAuthErrors.PASSWORD_LENGTH
+
     def test_check_change_pwd_with_equal_new_and_old_pws(
             self,
             base_url,
