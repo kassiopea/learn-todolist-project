@@ -287,8 +287,29 @@ class TestUnsuccessfulPasswordChange:
 
 
 class TestSuccessfulPasswordChange:
-    def test_check_change_pwd_with_min_length_new_pwd(self):
-        pass
+    def test_check_change_pwd_with_min_length_new_pwd(
+            self,
+            base_url,
+            get_auth_user,
+            json_auth_valid_new_pwd
+    ):
+        auth = ApiAuth(base_url=base_url)
+        data = {
+            "old_password": get_auth_user.password,
+            "new_password": json_auth_valid_new_pwd["new_password"]
+        }
+
+        response = auth.change_password(
+            path=AuthUrls.CHANGE_PASSWORD,
+            data=data,
+            headers=get_auth_user.headers,
+            cookies=get_auth_user.cookie
+        )
+
+        assert response.status_code == 200
+        response_body = response.json()
+        assert response_body["data"]["nModified"] == 1
+        assert response_body["data"]["updatedExisting"] is True
 
     def test_check_change_pwd_with_max_length_new_pwd(self):
         pass
