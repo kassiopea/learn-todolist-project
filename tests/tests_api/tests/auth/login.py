@@ -435,6 +435,36 @@ class TestLoginWithInvalidFields:
         assert message == UserAuthErrors.LOGIN_DOES_NOT_EXIST
 
 
+class TestInvalidLogin:
+    def test_check_cannot_login_deleted_user(
+            self,
+            base_url,
+            get_base_header,
+            get_auth_user
+    ):
+        auth = ApiAuth(base_url=base_url)
+        response = auth.delete_user(
+            path=AuthUrls.DELETE,
+            headers=get_auth_user.headers,
+            cookies=get_auth_user.cookie
+        )
+        assert response.status_code == 200
+
+        data = {
+            "username": get_auth_user.username,
+            "password": get_auth_user.password
+        }
+
+        response_for_login = auth.login(
+            path=AuthUrls.LOGIN,
+            data=data,
+            headers=get_base_header
+        )
+        assert response_for_login.status_code == 400
+        response_for_login_body = response_for_login.json()
+        print(response_for_login_body)
+
+
 class TestLoginWithValidFields:
     def test_check_login_with_valid_username_and_pwd(
             self,

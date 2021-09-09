@@ -106,7 +106,7 @@ def registration(admin_key, username, email, password):
         response.set_cookie('access_token', token)
         return response
 
-    return make_response(error=errors, status_code=400)
+    return make_response(error=errors["errors"], status_code=400)
 
 
 def authenticate(login, password):

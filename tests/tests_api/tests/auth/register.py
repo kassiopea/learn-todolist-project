@@ -490,6 +490,69 @@ class TestRegistrationInvalidValues:
         message = response_body["errors"]["admin_key"]
         assert message == UserAuthErrors.ADMIN_NOT_REGISTRATION
 
+    def test_check_invalid_username_equal_deleted_user(
+            self,
+            base_url,
+            get_auth_user
+    ):
+        auth = ApiAuth(base_url=base_url)
+
+        response = auth.delete_user(
+            path=AuthUrls.DELETE,
+            headers=get_auth_user.headers,
+            cookies=get_auth_user.cookie
+
+        )
+        assert response.status_code == 200
+
+        data = {
+            "username": get_auth_user.username,
+            "email": "testDelUsernameNew@teset.ru",
+            "password": get_auth_user.password
+        }
+
+        response_for_register = auth.registration(
+            path=AuthUrls.REGISTER,
+            data=data
+        )
+
+        assert response_for_register.status_code == 400
+        response_for_register_body = response_for_register.json()
+        print(response_for_register_body)
+        current_msg = response_for_register_body["errors"][0]["username"]
+        assert current_msg == UserAuthErrors.USERNAME_ALREADY_EXISTS
+
+    def test_check_invalid_email_equal_deleted_user(
+            self,
+            base_url,
+            get_auth_user
+    ):
+        auth = ApiAuth(base_url=base_url)
+
+        response = auth.delete_user(
+            path=AuthUrls.DELETE,
+            headers=get_auth_user.headers,
+            cookies=get_auth_user.cookie
+
+        )
+        assert response.status_code == 200
+
+        data = {
+            "username": "NewUserAsDeleted",
+            "email": get_auth_user.email,
+            "password": get_auth_user.password
+        }
+
+        response_for_register = auth.registration(
+            path=AuthUrls.REGISTER,
+            data=data
+        )
+
+        assert response_for_register.status_code == 400
+        response_for_register_body = response_for_register.json()
+        current_msg = response_for_register_body["errors"][0]["email"]
+        assert current_msg == UserAuthErrors.USER_ALREADY_EXISTS
+
 
 class TestRegistrationValidValue:
     def test_check_value_min_username(

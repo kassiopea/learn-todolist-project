@@ -20,3 +20,5 @@ class UserAuthErrors:
     REVOKED_TOKEN = "Token has been revoked"
     INCORRECT_PASSWORD = "Такого пароля не существует."
     PASSWORD_DID_NOT_CHANGE = "Пароль не был изменен"
+    USERNAME_ALREADY_EXISTS = "Имя пользователя занято."
+    USER_ALREADY_EXISTS = "Пользователь с такой почтой уже существует"
