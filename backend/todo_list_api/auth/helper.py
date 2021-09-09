@@ -119,7 +119,7 @@ def authenticate(login, password):
     existing_username = users_collection.find_one({"username": login})
     existing_email = users_collection.find_one({"email": login})
 
-    if existing_username and check_password_hash(user.get("password"), password):
+    if existing_username is not None and check_password_hash(user.get("password"), password):
         response = get_auth_without_deleted_users(
             login_key="username",
             login=login,
@@ -178,12 +178,15 @@ def remove_user(user_id):
 
 def get_auth_without_deleted_users(login_key, login, existing_user):
     users_collection = mongo.db.users
-    status = existing_user['status']
+    # status = existing_user['status']
+    status = existing_user.get("status")
+
     if status == "deleted":
         notifications = Notifications("errors")
-        error = notifications.add_notification(field=login_key, message=ErrorMessages.LOGIN_DOES_NOT_EXIST)
+        notifications.add_notification(field=login_key, message=ErrorMessages.LOGIN_DOES_NOT_EXIST)
         status_code = 400
-        response = make_response(error=error["errors"], status_code=status_code)
+        errors = notifications.get_notifications()
+        response = make_response(error=errors, status_code=status_code)
         return response
     else:
         _id = str(existing_user['_id'])
