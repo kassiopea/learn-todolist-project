@@ -83,11 +83,22 @@ class TestUnsuccessfulDeleteUser:
         current_message = response_body["msg"]
         assert current_message == UserAuthErrors.INVALID_TOKEN_IN_COOKIE
 
-    def test_check_cannot_register_removed_user(self):
-        pass
-
 
 class TestSuccessfulDeleteUser:
-    def test_check_delete_user(self):
-        pass
+    def test_check_delete_user(
+            self,
+            base_url,
+            get_auth_user
+    ):
+        auth = ApiAuth(base_url=base_url)
+        response = auth.delete_user(
+            path=AuthUrls.DELETE,
+            headers=get_auth_user.headers,
+            cookies=get_auth_user.cookie
+        )
+
+        assert response.status_code == 200
+        response_body = response.json()
+        current_msg = response_body["data"]["delete"]
+        assert current_msg == "ok"
 
