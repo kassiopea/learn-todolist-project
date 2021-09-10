@@ -84,7 +84,7 @@ class TestRegistrationWithoutRequiredFields:
     ):
         auth = ApiAuth(base_url=base_url)
         data = {
-            "email": get_user["email"],
+            "username": get_user["username"],
             "password": get_user["password"]
         }
         response = auth.registration(
@@ -115,7 +115,7 @@ class TestRegistrationWithoutRequiredFields:
         content_type = response.headers["Content-Type"]
         assert content_type == "application/json"
         response_body = response.json()
-        message = response_body["errors"][0]["email"]
+        message = response_body["errors"][0]["password"]
         assert message == UserAuthErrors.FIELD_REQUIREMENT
 
     def test_check_json_schema_response_without_password(
@@ -259,7 +259,7 @@ class TestRegistrationWithEmptyRequiredFields:
         content_type = response.headers["Content-Type"]
         assert content_type == "application/json"
         response_body = response.json()
-        message = response_body["errors"][0]["email"]
+        message = response_body["errors"][0]["password"]
         assert message == UserAuthErrors.FIELD_REQUIREMENT
 
     @pytest.mark.parametrize("value", ["", " "])
@@ -351,7 +351,7 @@ class TestRegistrationInvalidWithBoundaryValues:
         )
         assert response.status_code == 400
         response_body = response.json()
-        message = response_body["errors"][0]["username"]
+        message = response_body["errors"][0]["password"]
         assert message == UserAuthErrors.PASSWORD_LENGTH
 
     def test_check_value_more_than_max_password(
@@ -374,7 +374,7 @@ class TestRegistrationInvalidWithBoundaryValues:
         )
         assert response.status_code == 400
         response_body = response.json()
-        message = response_body["errors"][0]["username"]
+        message = response_body["errors"][0]["password"]
         assert message == UserAuthErrors.PASSWORD_LENGTH
 
 
@@ -398,7 +398,7 @@ class TestRegistrationInvalidValues:
         )
         assert response.status_code == 400
         response_body = response.json()
-        message = response_body["errors"]["username"]
+        message = response_body["errors"][0]["username"]
         assert message == UserAuthErrors.USERNAME_INVALID_SYMBOLS
 
     def test_check_invalid_first_symbol_in_username(
@@ -420,7 +420,7 @@ class TestRegistrationInvalidValues:
         )
         assert response.status_code == 400
         response_body = response.json()
-        message = response_body["errors"]["username"]
+        message = response_body["errors"][0]["username"]
         assert message == UserAuthErrors.USERNAME_INVALID_SYMBOLS
 
     def test_check_invalid_email(
@@ -442,7 +442,7 @@ class TestRegistrationInvalidValues:
         )
         assert response.status_code == 400
         response_body = response.json()
-        message = response_body["errors"]["email"]
+        message = response_body["errors"][0]["email"]
         assert message == UserAuthErrors.EMAIL_INVALID
 
     def test_check_invalid_password(
@@ -464,7 +464,7 @@ class TestRegistrationInvalidValues:
         )
         assert response.status_code == 400
         response_body = response.json()
-        message = response_body["errors"]["password"]
+        message = response_body["errors"][0]["password"]
         assert message == UserAuthErrors.PASSWORD_INVALID
 
     def test_check_invalid_admin_key(
@@ -487,7 +487,7 @@ class TestRegistrationInvalidValues:
         )
         assert response.status_code == 400
         response_body = response.json()
-        message = response_body["errors"]["admin_key"]
+        message = response_body["errors"][0]["admin_key"]
         assert message == UserAuthErrors.ADMIN_NOT_REGISTRATION
 
     def test_check_invalid_username_equal_deleted_user(
